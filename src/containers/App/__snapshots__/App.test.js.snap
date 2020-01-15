@@ -9,7 +9,6 @@ exports[`App component should match the snapshot with a ChatBox if the user has 
   />
   <Connect(ChatBox)
     addMessage={[Function]}
-    messages={Array []}
   />
 </div>
 `;

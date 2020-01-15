@@ -1,7 +1,7 @@
 import React from 'react';
 import { shallow } from 'enzyme';
 import { App, mapStateToProps, mapDispatchToProps } from './App';
-import { removeUser, hasErrored } from '../../actions';
+import { removeUser, hasErrored, addMessage, clearMessages } from '../../actions';
 import { endConversation } from '../../apiCalls';
 
 jest.mock('../../apiCalls');
@@ -13,9 +13,9 @@ describe('App component', () => {
 
   beforeEach(() => {
     const mockUser = {
-      id: 1568665187737, 
-      firstName: "Travis", 
-      lastName: "Rollins", 
+      id: 1568665187737,
+      firstName: "Travis",
+      lastName: "Rollins",
       feeling: "tired"
     };
 
@@ -62,47 +62,75 @@ describe('App component', () => {
 describe('mapStateToProps', () => {
   it('should return an object with the user information', () => {
     const mockUser = {
-      id: 1568665187737, 
-      firstName: "Travis", 
-      lastName: "Rollins", 
+      id: 1568665187737,
+      firstName: "Travis",
+      lastName: "Rollins",
       feeling: "tired"
+    };
+
+    const mockMessage = {
+      message: 'Hi!',
+      isUser: false
     };
 
     const mockState = {
       user: mockUser,
-      messages: [{
-        message: 'Hi there, my name is Dr. Watson. I understand that you have been feeling happy. That is super exciting to hear!',
-        isUser: false,
-      }],
+      messages: [ mockMessage ],
       errorMsg: ''
     };
+
     const expected = {
-      user: mockUser
+      user: mockUser,
+      messages: [ mockMessage ]
     }
 
     const mappedProps = mapStateToProps(mockState);
-    
+
     expect(mappedProps).toEqual(expected);
   });
 });
 
 describe('mapDispatchToProps', () => {
+  let mockDispatch, mappedProps
+
+  beforeEach(() => {
+    mockDispatch = jest.fn();
+    mappedProps = mapDispatchToProps(mockDispatch);
+  });
+
   it('calls dispatch with a removeUser action when removeUser is called', () => {
-    const mockDispatch = jest.fn();
     const actionToDispatch = removeUser();
 
-    const mappedProps = mapDispatchToProps(mockDispatch);
     mappedProps.removeUser();
 
     expect(mockDispatch).toHaveBeenCalledWith(actionToDispatch);
   });
 
   it('calls dispatch with a hasErrored action when hasErrored is called', () => {
-    const mockDispatch = jest.fn();
     const actionToDispatch = hasErrored('fetch failed');
 
-    const mappedProps = mapDispatchToProps(mockDispatch);
     mappedProps.hasErrored('fetch failed');
+
+    expect(mockDispatch).toHaveBeenCalledWith(actionToDispatch);
+  });
+
+  it('calls dispatch with a addMessage action when addMessage is called', () => {
+    const mockMessage = {
+      message: 'Hi!',
+      isUser: false
+    }
+
+    const actionToDispatch = addMessage(mockMessage);
+
+    mappedProps.addMessage(mockMessage);
+
+    expect(mockDispatch).toHaveBeenCalledWith(actionToDispatch);
+  });
+
+  it('calls dispatch with a clearMessages action when clearMessages is called', () => {
+    const actionToDispatch = clearMessages();
+
+    mappedProps.clearMessages();
 
     expect(mockDispatch).toHaveBeenCalledWith(actionToDispatch);
   });
