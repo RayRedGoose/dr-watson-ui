@@ -21,15 +21,43 @@ export class WelcomeModal extends Component {
   }
 
   handleSubmit = e => {
-    const { firstName, lastName, feeling } = this.state;
+    const { firstName, lastName, feeling, error } = this.state;
     e.preventDefault();
-    this.props.createUser({
-      id: Date.now(),
-      firstName,
-      lastName,
-      feeling,
-    });
-    this.connectToChatBot();
+    if (this.validateForm()) {
+      this.props.createUser({
+        id: Date.now(),
+        firstName,
+        lastName,
+        feeling,
+      });
+      this.connectToChatBot();
+    }
+  }
+
+  validateForm = () => {
+    const { firstName, lastName, feeling } = this.state;
+    if (firstName === '' && lastName === '' && feeling === '') {
+      return this.setState({error: 'All information must be entered!'})
+    }
+    if (firstName === '' && lastName === '') {
+      return this.setState({error: 'Enter first and last names!'})
+    }
+    if (firstName === '' && feeling === '') {
+      return this.setState({error: 'Enter first name and feeling!'})
+    }
+    if (lastName === '' && feeling === '') {
+      return this.setState({error: 'Enter last name and feeling!'})
+    }
+    if (firstName === '') {
+      return this.setState({error: 'Enter first name!'})
+    }
+    if (lastName === '') {
+      return this.setState({error: 'Enter last name!'})
+    }
+    if (feeling === '') {
+      return this.setState({error: 'Choose your feeling!'})
+    }
+    return true;
   }
 
   connectToChatBot = async () => {
