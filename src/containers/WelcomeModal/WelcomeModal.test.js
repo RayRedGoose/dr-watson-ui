@@ -54,6 +54,133 @@ describe('WelcomeModal component', () => {
     expect(wrapper.state('firstName')).toEqual('Travis');
   });
 
+  describe("validateForm", () => {
+    it("should call validateForm method when handleSubmit is called", () => {
+      const spy = jest.spyOn(wrapper.instance(), 'validateForm')
+        .mockImplementation(jest.fn)
+
+      const mockEvent = {
+        preventDefault: jest.fn()
+      };
+
+      wrapper.instance().handleSubmit(mockEvent)
+
+      expect(spy).toHaveBeenCalled()
+    });
+
+    it("should change error state to specific error message if all state are empty", () => {
+      expect(wrapper.state('error')).toEqual('')
+
+      wrapper.setState({
+        firstName: '',
+        lastName: '',
+        feeling: ''
+      })
+
+      const expected = 'All information must be entered!';
+
+      const result = wrapper.instance().validateForm()
+
+      expect(wrapper.state('error')).toEqual(expected)
+    });
+
+    it("should change error state to specific error message if first name and last name state are empty", () => {
+      expect(wrapper.state('error')).toEqual('')
+
+      wrapper.setState({
+        firstName: '',
+        lastName: '',
+        feeling: 'tired'
+      })
+
+      const expected = 'Enter first and last names!';
+
+      const result = wrapper.instance().validateForm()
+
+      expect(wrapper.state('error')).toEqual(expected)
+    });
+
+    it("should change error state to specific error message if first name and feeling state are empty", () => {
+      expect(wrapper.state('error')).toEqual('')
+
+      wrapper.setState({
+        firstName: '',
+        lastName: 'LastName',
+        feeling: ''
+      })
+
+      const expected = 'Enter first name and feeling!';
+
+      const result = wrapper.instance().validateForm()
+
+      expect(wrapper.state('error')).toEqual(expected)
+    });
+
+    it("should change error state to specific error message if last name and feeling state are empty", () => {
+      expect(wrapper.state('error')).toEqual('')
+
+      wrapper.setState({
+        firstName: 'FirstName',
+        lastName: '',
+        feeling: ''
+      })
+
+      const expected = 'Enter last name and feeling!';
+
+      const result = wrapper.instance().validateForm()
+
+      expect(wrapper.state('error')).toEqual(expected)
+    });
+
+    it("should change error state to specific error message if only feeling state is empty", () => {
+      expect(wrapper.state('error')).toEqual('')
+
+      wrapper.setState({
+        firstName: 'FirstName',
+        lastName: 'LastName',
+        feeling: ''
+      })
+
+      const expected = 'Choose your feeling!';
+
+      const result = wrapper.instance().validateForm()
+
+      expect(wrapper.state('error')).toEqual(expected)
+    });
+
+    it("should change error state to specific error message if only first name state is empty", () => {
+      expect(wrapper.state('error')).toEqual('')
+
+      wrapper.setState({
+        firstName: '',
+        lastName: 'LastName',
+        feeling: 'tired'
+      })
+
+      const expected = 'Enter first name!';
+
+      const result = wrapper.instance().validateForm()
+
+      expect(wrapper.state('error')).toEqual(expected)
+    });
+
+    it("should change error state to specific error message if only feeling state is empty", () => {
+      expect(wrapper.state('error')).toEqual('')
+
+      wrapper.setState({
+        firstName: 'FirstName',
+        lastName: '',
+        feeling: 'tired'
+      })
+
+      const expected = 'Enter last name!';
+
+      const result = wrapper.instance().validateForm()
+
+      expect(wrapper.state('error')).toEqual(expected)
+    });
+  });
+
   it('should call createUser with correct arguments and connectToChatBot', () => {
     global.Date.now = jest.fn().mockImplementation(() => 12345);
     wrapper.instance().connectToChatBot = jest.fn();
@@ -75,7 +202,7 @@ describe('WelcomeModal component', () => {
   });
 
   it('should call startConversation and addMessage with correct arguments when connectToChatBot is called', async () => {
-    const mockMessage = { 
+    const mockMessage = {
       message: 'Hi there, my name is Dr. Watson. I understand that you have been feeling happy. That is super exciting to hear!'
     };
     startConversation.mockImplementation(() => {
@@ -124,7 +251,7 @@ describe('WelcomeModal component', () => {
     wrapper.find('input').at(0).simulate('change', mockFirstNameEvent);
     wrapper.find('input').at(1).simulate('change', mockLastNameEvent);
     wrapper.find('select').simulate('change', mockFeelingEvent);
-    
+
     expect(wrapper.instance().handleChange).toHaveBeenCalledWith(mockFirstNameEvent);
     expect(wrapper.instance().handleChange).toHaveBeenCalledWith(mockLastNameEvent);
     expect(wrapper.instance().handleChange).toHaveBeenCalledWith(mockFeelingEvent);
