@@ -79,7 +79,7 @@ describe('App component', () => {
 });
 
 describe('mapStateToProps', () => {
-  it('should return an object with the user information', () => {
+  it('should return an object with the user information and messages', () => {
     const mockUser = {
       id: 1568665187737,
       firstName: "Travis",
