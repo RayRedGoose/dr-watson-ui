@@ -14,7 +14,6 @@ export const startConversation = async feeling => {
   }
 
   const data = await response.json();
-  console.log(data)
   return data;
 }
 
