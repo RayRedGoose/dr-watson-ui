@@ -18,7 +18,21 @@ export const startConversation = async feeling => {
 }
 
 export const postMessage = async newMessage => {
+  const url = 'https://drwatson-api.herokuapp.com/api/message'
+  const options = {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({newMessage})
+  };
 
+  const response = await fetch(url, options);
+  if (!response.ok) {
+    throw Error('Cannot read property \'message\' of undefined')
+  }
+  const data = await response.json();
+  return data;
 }
 
 export const endConversation = async () => {
