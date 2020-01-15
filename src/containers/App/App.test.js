@@ -9,6 +9,8 @@ jest.mock('../../apiCalls');
 describe('App component', () => {
   const mockRemoveUser = jest.fn();
   const mockHasErrored = jest.fn();
+  const mockAddMessage = jest.fn();
+  const mockClearMessages = jest.fn();
   let wrapper;
 
   beforeEach(() => {
@@ -23,6 +25,8 @@ describe('App component', () => {
         user={mockUser}
         removeUser={mockRemoveUser}
         hasErrored={mockHasErrored}
+        addMessage={mockAddMessage}
+        clearMessages={mockClearMessages}
     />);
   });
 
@@ -35,17 +39,32 @@ describe('App component', () => {
       user={null}
       removeUser={mockRemoveUser}
       hasErrored={mockHasErrored}
+      addMessage={mockAddMessage}
+      clearMessages={mockClearMessages}
     />);
 
     expect(wrapper).toMatchSnapshot();
   });
 
+  it("should call addMessage props when addMessage method is calling", () => {
+    const mockMessage = 'Hi!'
+    wrapper.instance().addMessage(mockMessage, true)
 
-  it('should call endConversation, and removeUser if someone signs out', async () => {
+    const expectedArgs = {
+      message: mockMessage,
+      isUser: true
+    }
+
+    expect(mockAddMessage).toHaveBeenCalledWith(expectedArgs)
+
+  });
+
+  it('should call endConversation, removeUser and clearMessages if someone signs out', async () => {
     await wrapper.instance().signOut();
 
     expect(endConversation).toHaveBeenCalled();
     expect(mockRemoveUser).toHaveBeenCalled();
+    expect(mockClearMessages).toHaveBeenCalled();
   });
 
   it('should call hasErrored if endCoversation does not resolve when a user signs out', async () => {
